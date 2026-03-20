@@ -1,6 +1,7 @@
 import { spinner } from "@clack/prompts";
 import color from "picocolors";
 import * as cheerio from "cheerio";
+import { setTimeout as sleep } from "node:timers/promises";
 
 export default class PvOil {
   private readonly endpoint: string;
@@ -35,5 +36,6 @@ export default class PvOil {
     spin.stop("Bảng giá xăng hôm nay của sếp đây ạ");
 
     console.log(result);
+    await sleep(500);
   }
 }

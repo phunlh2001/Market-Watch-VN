@@ -1,4 +1,5 @@
-import { binance, Ticker } from "ccxt";
+import { binance } from "ccxt";
+import { setTimeout as sleep } from "node:timers/promises";
 
 export default class Binance {
   private readonly exchange: binance;
@@ -11,21 +12,20 @@ export default class Binance {
   }
 
   async checkBTC() {
-    const ticker = await this.fetchTicker('BTC/USDT');
-    console.log(ticker);
+    await this.fetchTicker('BTC/USDT');
   }
 
   async checkETH() {
-    const ticker = await this.fetchTicker('ETH/USDT');
-    console.log(ticker);
+    await this.fetchTicker('ETH/USDT');
   }
 
   async checkUSDT() {
-    const ticker = await this.fetchTicker('USDT/USD');
-    console.log(ticker);
+    await this.fetchTicker('USDT/USD');
   }
 
-  private async fetchTicker(type: string): Promise<Ticker> {
-    return this.exchange.fetchTicker(type);
+  private async fetchTicker(type: string): Promise<void> {
+    const ticker = this.exchange.fetchTicker(type);
+    console.log(ticker);
+    await sleep(500);
   }
 }
