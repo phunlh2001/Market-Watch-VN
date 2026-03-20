@@ -15,6 +15,7 @@ import {
   PVOIL_ENDPOINT,
 } from "./constants/env.js";
 import PvOil from "./services/pvoil.js";
+import VnStock from "./services/vnstock.js";
 
 async function main(): Promise<void> {
   let shouldContinue: boolean | symbol;
@@ -32,6 +33,7 @@ async function main(): Promise<void> {
 
   const pvOil = new PvOil(_pvOilEndpoint);
   const binance = new Binance(_apiKey, _secret);
+  const vnStock = new VnStock();
 
   do {
     console.log();
@@ -59,25 +61,21 @@ async function main(): Promise<void> {
       switch (v) {
         case "gasoline":
           await pvOil.checkCurrentPrices();
-          await sleep(500);
           break;
         case "btc":
           await binance.checkBTC();
-          await sleep(500);
           break;
         case "eth":
           await binance.checkETH();
-          await sleep(500);
           break;
         case "usdt":
           await binance.checkUSDT();
-          await sleep(500);
           break;
         case "vn30":
-          console.log("Check ETF VND30 prices");
+          vnStock.checkCurrentPrice("E1VFVN30")
           break;
         case "vnd":
-          console.log("Check ETF Diamond prices");
+          vnStock.checkCurrentPrice("FUEVFVND");
           break;
         case "all":
           console.log("Check all things");
