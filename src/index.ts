@@ -72,10 +72,10 @@ async function main(): Promise<void> {
           await binance.checkUSDT();
           break;
         case "vn30":
-          await vnStock.checkCurrentPrice("E1VFVN30")
+          await vnStock.checkVn30();
           break;
         case "vnd":
-          await vnStock.checkCurrentPrice("FUEVFVND");
+          await vnStock.checkVnDiamond();
           break;
         case "all":
           console.log("Check all things");
