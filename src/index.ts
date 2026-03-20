@@ -19,13 +19,13 @@ import PvOil from "./services/pvoil.js";
 async function main(): Promise<void> {
   let shouldContinue: boolean | symbol;
 
-  let _pvOilEndpoint = PVOIL_ENDPOINT;
+  const _pvOilEndpoint = PVOIL_ENDPOINT;
   if (!_pvOilEndpoint) {
     throw new Error("Thiếu pvoil endpoint rồi sếp ơi!!!");
   }
 
-  let _apiKey = BINANCE_APIKEY;
-  let _secret = BINANCE_SECRETKEY;
+  const _apiKey = BINANCE_APIKEY;
+  const _secret = BINANCE_SECRETKEY;
   if (!_apiKey || !_secret) {
     throw new Error("Thiếu key từ Binance rồi sếp ơi!!!");
   }
@@ -96,7 +96,7 @@ async function main(): Promise<void> {
     console.log();
   } while (!isCancel(shouldContinue) && shouldContinue);
 
-  outro("Hẹn gặp lại sếp!");
+  outro(color.green("Hẹn gặp lại sếp!"));
 }
 
 main().catch(console.error);
