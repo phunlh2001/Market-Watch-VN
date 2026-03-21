@@ -5,6 +5,7 @@ import {
   isCancel,
   cancel,
   outro,
+  spinner,
 } from "@clack/prompts";
 import color from "picocolors";
 import { setTimeout as sleep } from "node:timers/promises";
@@ -35,6 +36,7 @@ async function main(): Promise<void> {
   const binance = new Binance(_apiKey, _secret);
   const vnStock = new VnStock();
 
+  const spin = spinner();
   do {
     console.log();
     intro(color.cyan("=========== Nay sếp muốn kiểm tra món gì? ==========="));
@@ -60,16 +62,16 @@ async function main(): Promise<void> {
     selected.forEach(async (v) => {
       switch (v) {
         case "gasoline":
-          await pvOil.checkCurrentPrices();
+          await pvOil.checkCurrentPrices(spin);
           break;
         case "btc":
-          await binance.checkBTC();
+          await binance.checkBTC(spin);
           break;
         case "eth":
-          await binance.checkETH();
+          await binance.checkETH(spin);
           break;
         case "usdt":
-          await binance.checkUSDT();
+          await binance.checkUSDT(spin);
           break;
         case "vn30":
           await vnStock.checkVn30();
@@ -86,7 +88,7 @@ async function main(): Promise<void> {
     await sleep(1000);
 
     shouldContinue = await confirm({
-      message: "Sếp có muốn coi tiếp các danh mục khác hong?",
+      message: color.magenta("Sếp có muốn coi tiếp các danh mục khác hong?"),
       active: "OK Luôn",
       inactive: "Thôi đủ rồi",
     });

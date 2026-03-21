@@ -1,4 +1,4 @@
-import { spinner } from "@clack/prompts";
+import { SpinnerResult } from "@clack/prompts";
 import color from "picocolors";
 import * as cheerio from "cheerio";
 import { setTimeout as sleep } from "node:timers/promises";
@@ -10,8 +10,7 @@ export default class PvOil {
     this.endpoint = endpoint;
   }
 
-  async checkCurrentPrices(): Promise<void> {
-    let spin = spinner();
+  async checkCurrentPrices(spin: SpinnerResult): Promise<void> {
     spin.start(color.bold("Đang lấy bảng giá"));
 
     const res = await fetch(this.endpoint);
@@ -33,9 +32,12 @@ export default class PvOil {
       }
     });
 
-    spin.stop("Bảng giá xăng hôm nay của sếp đây ạ");
+    spin.stop(color.yellowBright("Bảng giá xăng hôm nay của sếp đây ạ"));
 
-    console.log(result);
+    Object.entries(result).forEach(([key, value]) => {
+      console.log(`- ${key}:\t${value}`);
+    })
+
     await sleep(500);
   }
 }
