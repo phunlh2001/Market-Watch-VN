@@ -1,1 +1,0 @@
-export type OilResult = Record<string, string>;

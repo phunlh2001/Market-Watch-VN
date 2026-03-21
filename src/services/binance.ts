@@ -1,6 +1,7 @@
-import { SpinnerResult } from "@clack/prompts";
 import { binance } from "ccxt";
-import { setTimeout as sleep } from "node:timers/promises";
+import { formatUSD } from "../utils/index.js";
+import { SpinnerResult } from "@clack/prompts";
+import color from "picocolors";
 
 export default class Binance {
   private readonly exchange: binance;
@@ -8,25 +9,25 @@ export default class Binance {
   constructor(key: string, secret: string) {
     this.exchange = new binance({
       apiKey: key,
-      secret: secret
-    })
+      secret: secret,
+    });
   }
 
   async checkBTC(spin: SpinnerResult) {
-    await this.fetchTicker('BTC/USDT', spin);
+    await this.fetchTicker("BTC/USDT", spin);
   }
 
   async checkETH(spin: SpinnerResult) {
-    await this.fetchTicker('ETH/USDT', spin);
+    await this.fetchTicker("ETH/USDT", spin);
   }
 
-  async checkUSDT(spin: SpinnerResult) {
-    await this.fetchTicker('USDT/USD', spin);
-  }
-
-  private async fetchTicker(type: string, spin: SpinnerResult): Promise<void> {
+  private async fetchTicker(type: string, spin: SpinnerResult) {
     const ticker = await this.exchange.fetchTicker(type);
-    console.log(ticker.info.openPrice);
-    await sleep(500);
+    const { lastPrice, priceChangePercent } = ticker.info;
+
+    spin.stop(color.yellowBright("Bảng giá crypto hôm nay của sếp đây ạ"));
+    console.log(
+      `- Bảng giá ${type} hôm nay là:\t${formatUSD(lastPrice)}\t(${priceChangePercent}%)`,
+    );
   }
 }

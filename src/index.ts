@@ -8,7 +8,6 @@ import {
   spinner,
 } from "@clack/prompts";
 import color from "picocolors";
-import { setTimeout as sleep } from "node:timers/promises";
 import Binance from "./services/binance.js";
 import {
   BINANCE_APIKEY,
@@ -19,8 +18,6 @@ import PvOil from "./services/pvoil.js";
 import VnStock from "./services/vnstock.js";
 
 async function main(): Promise<void> {
-  let shouldContinue: boolean | symbol;
-
   const _pvOilEndpoint = PVOIL_ENDPOINT;
   if (!_pvOilEndpoint) {
     throw new Error("Thiếu pvoil endpoint rồi sếp ơi!!!");
@@ -36,9 +33,10 @@ async function main(): Promise<void> {
   const binance = new Binance(_apiKey, _secret);
   const vnStock = new VnStock();
 
+  let shouldContinue: boolean | symbol;
   const spin = spinner();
   do {
-    console.log();
+    console.clear();
     intro(color.cyan("=========== Nay sếp muốn kiểm tra món gì? ==========="));
 
     const selected = await autocompleteMultiselect({
@@ -48,7 +46,6 @@ async function main(): Promise<void> {
         { value: "gasoline", label: "Giá xăng hôm nay" },
         { value: "btc", label: "Bitcoin" },
         { value: "eth", label: "Ethereum" },
-        { value: "usdt", label: "Tether USD (USDT)" },
         { value: "vn30", label: "ETF VN30" },
         { value: "vnd", label: "ETF VN Diamond" },
       ],
@@ -59,7 +56,11 @@ async function main(): Promise<void> {
       return;
     }
 
-    selected.forEach(async (v) => {
+    if (selected.length > 0) {
+      spin.start(color.yellow("Đang lấy thông tin"));
+    }
+
+    for (let v of selected) {
       switch (v) {
         case "gasoline":
           await pvOil.checkCurrentPrices(spin);
@@ -70,30 +71,28 @@ async function main(): Promise<void> {
         case "eth":
           await binance.checkETH(spin);
           break;
-        case "usdt":
-          await binance.checkUSDT(spin);
-          break;
         case "vn30":
-          await vnStock.checkVn30();
+          await vnStock.checkVn30(spin);
           break;
         case "vnd":
-          await vnStock.checkVnDiamond();
+          await vnStock.checkVnDiamond(spin);
           break;
         case "all":
-          console.log("Check all things");
+          spin.stop(color.yellowBright('Bảng giá các thông tin sếp quan tâm đây ạ'))
+          await pvOil.checkCurrentPrices(spin);
+          await vnStock.checkVn30(spin);
+          await vnStock.checkVnDiamond(spin);
+          await binance.checkBTC(spin);
+          await binance.checkETH(spin);
           break;
       }
-    });
-
-    await sleep(1000);
+    }
 
     shouldContinue = await confirm({
       message: color.magenta("Sếp có muốn coi tiếp các danh mục khác hong?"),
-      active: "OK Luôn",
+      active: "Ok luôn",
       inactive: "Thôi đủ rồi",
     });
-
-    console.log();
   } while (!isCancel(shouldContinue) && shouldContinue);
 
   outro(color.green("Hẹn gặp lại sếp!"));
