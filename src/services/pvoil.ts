@@ -11,7 +11,7 @@ export default class PvOil {
     this.oilResults = {};
   }
 
-  async checkCurrentPrices(spin: SpinnerResult): Promise<void> {
+  async checkCurrentPrices(spin?: SpinnerResult): Promise<void> {
     if (Object.entries(this.oilResults).length === 0) {
       const res = await fetch(this.endpoint);
       const html = await res.text();
@@ -31,7 +31,9 @@ export default class PvOil {
       });
     }
 
-    spin.stop(color.yellowBright("Bảng giá xăng hôm nay của sếp đây ạ"));
+    if (spin) {
+      spin.stop(color.yellowBright("Bảng giá xăng hôm nay của sếp đây ạ"));
+    }
 
     Object.entries(this.oilResults).forEach(([key, value]) => {
       console.log(`- ${key}:\t\t${value}`);

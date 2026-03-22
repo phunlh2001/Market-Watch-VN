@@ -79,11 +79,11 @@ async function main(): Promise<void> {
           break;
         case "all":
           spin.stop(color.yellowBright('Bảng giá các thông tin sếp quan tâm đây ạ'))
-          await pvOil.checkCurrentPrices(spin);
-          await vnStock.checkVn30(spin);
-          await vnStock.checkVnDiamond(spin);
-          await binance.checkBTC(spin);
-          await binance.checkETH(spin);
+          await pvOil.checkCurrentPrices();
+          await vnStock.checkVn30();
+          await vnStock.checkVnDiamond();
+          await binance.checkBTC();
+          await binance.checkETH();
           break;
       }
     }
