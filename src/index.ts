@@ -44,6 +44,7 @@ async function main(): Promise<void> {
       options: [
         { value: "all", label: "Tất cả" },
         { value: "gasoline", label: "Giá xăng hôm nay" },
+        { value: "gold", label: "Giá vàng hôm nay" },
         { value: "btc", label: "Bitcoin" },
         { value: "eth", label: "Ethereum" },
         { value: "vn30", label: "ETF VN30" },
@@ -65,6 +66,9 @@ async function main(): Promise<void> {
         case "gasoline":
           await pvOil.checkCurrentPrices(spin);
           break;
+        case "gold":
+          console.log("giá vàng");
+          break;
         case "btc":
           await binance.checkBTC(spin);
           break;
@@ -78,7 +82,7 @@ async function main(): Promise<void> {
           await vnStock.checkVnDiamond(spin);
           break;
         case "all":
-          spin.stop(color.yellowBright('Bảng giá các thông tin sếp quan tâm đây ạ'))
+          spin.stop(color.yellowBright("Bảng giá các thông tin sếp quan tâm đây ạ"));
           await pvOil.checkCurrentPrices();
           await vnStock.checkVn30();
           await vnStock.checkVnDiamond();
