@@ -46,8 +46,8 @@ export default class VnStock {
     for (const gold of this.goldPrices) {
       console.log(`
       - Loại:\t${color.underline(gold.typeName)}
-        + Giá bán:\t${gold.sell}
-        + Giá mua:\t${gold.buy}
+        + Giá bán:\t${formatVND(this.parseNumber(gold.buy))}
+        + Giá mua:\t${formatVND(this.parseNumber(gold.sell))}
       ---------------------------`);
     }
   }
@@ -61,5 +61,9 @@ export default class VnStock {
     }
 
     console.log(`- Bảng giá ${fundCode} hôm nay là:\t${formatVND(price)}`);
+  }
+
+  private parseNumber(str: string): number {
+    return parseInt(str.replace(/,/g, ""), 10);
   }
 }
