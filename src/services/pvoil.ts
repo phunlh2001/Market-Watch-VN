@@ -1,17 +1,18 @@
 import { SpinnerResult } from "@clack/prompts";
 import color from "picocolors";
 import * as cheerio from "cheerio";
+import { OilRecord } from "../interfaces/index.js";
 
 export default class PvOil {
   private readonly endpoint: string;
-  private readonly oilResults: Record<string, string>;
+  private readonly oilResults: OilRecord;
   
   constructor(endpoint: string) {
     this.endpoint = endpoint;
     this.oilResults = {};
   }
 
-  async checkCurrentPrices(spin?: SpinnerResult): Promise<void> {
+  async checkGasolineCurrentPrices(spin?: SpinnerResult): Promise<void> {
     if (Object.entries(this.oilResults).length === 0) {
       const res = await fetch(this.endpoint);
       const html = await res.text();

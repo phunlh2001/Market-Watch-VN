@@ -2,12 +2,7 @@ import { commodity, stock } from "vnstock-js";
 import { formatVND } from "../utils/index.js";
 import { SpinnerResult } from "@clack/prompts";
 import color from "picocolors";
-
-interface Gold {
-  typeName: string
-  buy: string
-  sell: string
-}
+import { Gold } from "../interfaces/index.js";
 
 export default class VnStock {
   private readonly goldPrices: Gold[];
@@ -16,15 +11,15 @@ export default class VnStock {
     this.goldPrices = [];
   }
 
-  async checkVn30(spin?: SpinnerResult) {
+  async checkVn30(spin?: SpinnerResult): Promise<void> {
     await this.checkETFCurrentPrice("E1VFVN30", spin);
   }
 
-  async checkVnDiamond(spin?: SpinnerResult) {
+  async checkVnDiamond(spin?: SpinnerResult): Promise<void> {
     await this.checkETFCurrentPrice("FUEVFVND", spin);
   }
 
-  async checkSJC(spin?: SpinnerResult) {
+  async checkSJC(spin?: SpinnerResult): Promise<void> {
     const prices = await commodity.gold.priceSJC();
 
     if (this.goldPrices.length === 0) {
@@ -43,16 +38,21 @@ export default class VnStock {
       spin.stop(color.yellowBright("Bảng giá vàng hôm nay của sếp đây ạ"));
     }
     
-    for (const gold of this.goldPrices) {
-      console.log(`
-      - Loại:\t${color.underline(gold.typeName)}
-        + Giá bán:\t${formatVND(this.parseNumber(gold.buy))}
-        + Giá mua:\t${formatVND(this.parseNumber(gold.sell))}
-      ---------------------------`);
-    }
+    const data = Object.fromEntries(
+      this.goldPrices.map((gold, index) => [
+        index + 1,
+        {
+          "Loại": gold.typeName,
+          "Giá bán": formatVND(this.parseNumber(gold.sell)),
+          "Giá mua": formatVND(this.parseNumber(gold.buy))
+        }
+      ])
+    )
+
+    console.table(data);
   }
 
-  private async checkETFCurrentPrice(fundCode: string, spin?: SpinnerResult) {
+  private async checkETFCurrentPrice(fundCode: string, spin?: SpinnerResult): Promise<void> {
     const value = await stock.priceBoard({ ticker: fundCode });
     const price = value[0].listingInfo.refPrice;
 

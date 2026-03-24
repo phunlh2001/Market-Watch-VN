@@ -64,7 +64,7 @@ async function main(): Promise<void> {
     for (let v of selected) {
       switch (v) {
         case "gasoline":
-          await pvOil.checkCurrentPrices(spin);
+          await pvOil.checkGasolineCurrentPrices(spin);
           break;
         case "gold":
           await vnStock.checkSJC(spin);
@@ -83,11 +83,12 @@ async function main(): Promise<void> {
           break;
         case "all":
           spin.stop(color.yellowBright("Bảng giá các thông tin sếp quan tâm đây ạ"));
-          await pvOil.checkCurrentPrices();
+          await pvOil.checkGasolineCurrentPrices();
           await vnStock.checkVn30();
           await vnStock.checkVnDiamond();
           await binance.checkBTC();
           await binance.checkETH();
+          await vnStock.checkSJC();
           break;
       }
     }

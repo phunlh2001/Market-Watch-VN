@@ -13,15 +13,15 @@ export default class Binance {
     });
   }
 
-  async checkBTC(spin?: SpinnerResult) {
+  async checkBTC(spin?: SpinnerResult): Promise<void> {
     await this.fetchTicker("BTC/USDT", spin);
   }
 
-  async checkETH(spin?: SpinnerResult) {
+  async checkETH(spin?: SpinnerResult): Promise<void> {
     await this.fetchTicker("ETH/USDT", spin);
   }
 
-  private async fetchTicker(type: string, spin?: SpinnerResult) {
+  private async fetchTicker(type: string, spin?: SpinnerResult): Promise<void> {
     const ticker = await this.exchange.fetchTicker(type);
     const { lastPrice, priceChangePercent } = ticker.info;
 
