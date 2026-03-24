@@ -67,7 +67,7 @@ async function main(): Promise<void> {
           await pvOil.checkCurrentPrices(spin);
           break;
         case "gold":
-          console.log("giá vàng");
+          await vnStock.checkSJC(spin);
           break;
         case "btc":
           await binance.checkBTC(spin);

@@ -1,20 +1,58 @@
-import { stock } from "vnstock-js";
+import { commodity, stock } from "vnstock-js";
 import { formatVND } from "../utils/index.js";
 import { SpinnerResult } from "@clack/prompts";
 import color from "picocolors";
 
+interface Gold {
+  typeName: string
+  buy: string
+  sell: string
+}
+
 export default class VnStock {
-  constructor() {}
+  private readonly goldPrices: Gold[];
+
+  constructor() {
+    this.goldPrices = [];
+  }
 
   async checkVn30(spin?: SpinnerResult) {
-    await this.checkCurrentPrice("E1VFVN30", spin);
+    await this.checkETFCurrentPrice("E1VFVN30", spin);
   }
 
   async checkVnDiamond(spin?: SpinnerResult) {
-    await this.checkCurrentPrice("FUEVFVND", spin);
+    await this.checkETFCurrentPrice("FUEVFVND", spin);
   }
 
-  private async checkCurrentPrice(fundCode: string, spin?: SpinnerResult) {
+  async checkSJC(spin?: SpinnerResult) {
+    const prices = await commodity.gold.priceSJC();
+
+    if (this.goldPrices.length === 0) {
+      prices.forEach(x => {
+        if (x.TypeName.includes("Vàng")) {
+          this.goldPrices.push({
+            typeName: x.TypeName,
+            buy: x.Buy,
+            sell: x.Sell
+          })
+        }
+      })
+    }
+
+    if (spin) {
+      spin.stop(color.yellowBright("Bảng giá vàng hôm nay của sếp đây ạ"));
+    }
+    
+    for (const gold of this.goldPrices) {
+      console.log(`
+      - Loại:\t${color.underline(gold.typeName)}
+        + Giá bán:\t${gold.sell}
+        + Giá mua:\t${gold.buy}
+      ---------------------------`);
+    }
+  }
+
+  private async checkETFCurrentPrice(fundCode: string, spin?: SpinnerResult) {
     const value = await stock.priceBoard({ ticker: fundCode });
     const price = value[0].listingInfo.refPrice;
 
