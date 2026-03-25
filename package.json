@@ -2,7 +2,10 @@
   "name": "market-watch",
   "description": "One of my pet project is tracking gasoline prices, cryptocurrencies, and investment funds.",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "bin": {
+    "market-watch": "dist/index.js"
+  },
   "type": "module",
   "license": "MIT",
   "scripts": {
