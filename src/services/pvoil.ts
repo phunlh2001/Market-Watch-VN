@@ -33,11 +33,18 @@ export default class PvOil {
     }
 
     if (spin) {
-      spin.stop(color.yellowBright("Bảng giá xăng hôm nay của sếp đây ạ"));
+      let todayTime = new Date().toLocaleTimeString()
+      spin.stop(color.yellowBright(`Bảng giá xăng hôm nay (${todayTime}) của sếp đây ạ`));
     }
 
     Object.entries(this.oilResults).forEach(([key, value]) => {
-      console.log(`- ${key}:\t\t${value}`);
+      const price = Number(value.replace(" đ", ""));
+
+      if (price > 25) {
+        console.log(`- ${key}:\t\t${color.bold(color.red(value))}`);
+      } else {
+        console.log(`- ${key}:\t\t${value}`);
+      }
     })
   }
 }
