@@ -40,10 +40,10 @@ export default class PvOil {
     Object.entries(this.oilResults).forEach(([key, value]) => {
       const price = Number(value.replace(" đ", ""));
 
-      if (price > 25) {
+      if (price >= 28.5) {
         console.log(`- ${key}:\t\t${color.bold(color.red(value))}`);
       } else {
-        console.log(`- ${key}:\t\t${value}`);
+        console.log(`- ${key}:\t\t${color.bold(color.green(value))}`);
       }
     })
   }
