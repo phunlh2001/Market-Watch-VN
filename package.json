@@ -1,6 +1,6 @@
 {
   "name": "market-watch",
-  "description": "One of my pet project is tracking gasoline prices, cryptocurrencies, and investment funds.",
+  "description": "One of my pet project is tracking gasoline prices, gold prices, cryptocurrencies, and investment funds.",
   "version": "1.0.0",
   "main": "dist/index.js",
   "bin": {
