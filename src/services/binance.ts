@@ -29,7 +29,7 @@ export default class Binance {
       spin.stop(color.yellowBright("Bảng giá crypto hôm nay của sếp đây ạ"));
     }
     console.log(
-      `- Bảng giá ${type} hôm nay là:\t${formatUSD(lastPrice)}\t(${priceChangePercent}%)`,
+      `- ${type}:\t\t\t${formatUSD(lastPrice)}\t(${priceChangePercent}%)`,
     );
   }
 }
