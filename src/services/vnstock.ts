@@ -2,13 +2,13 @@ import { commodity, stock } from "vnstock-js";
 import { formatVND } from "../utils/index.js";
 import { SpinnerResult } from "@clack/prompts";
 import color from "picocolors";
-import { Gold } from "../interfaces/index.js";
+import { GoldMap, GoldPrice } from "../interfaces/index.js";
 
 export default class VnStock {
-  private readonly goldPrices: Gold[];
+  private readonly goldMap: GoldMap;
 
   constructor() {
-    this.goldPrices = [];
+    this.goldMap = {};
   }
 
   async checkVn30(spin?: SpinnerResult): Promise<void> {
@@ -22,45 +22,56 @@ export default class VnStock {
   async checkSJC(spin?: SpinnerResult): Promise<void> {
     const prices = await commodity.gold.priceSJC();
 
-    if (this.goldPrices.length === 0) {
-      prices.forEach(x => {
-        if (x.TypeName.includes("Vàng")) {
-          this.goldPrices.push({
-            typeName: x.TypeName,
-            buy: x.Buy,
-            sell: x.Sell
-          })
+    if (Object.entries(this.goldMap).length === 0) {
+      prices.forEach((p) => {
+        if (p.TypeName.includes('Vàng SJC')) {
+          const price: GoldPrice = { buy: p.Buy, sell: p.Sell };
+          this.goldMap[p.TypeName] = price;
         }
-      })
+      });
     }
 
     if (spin) {
-      spin.stop(color.yellowBright("Bảng giá vàng hôm nay của sếp đây ạ"));
+      let todayTime = new Date().toLocaleTimeString()
+      spin.stop(color.yellowBright(`Bảng giá vàng hôm nay (${todayTime}) của sếp đây ạ`));
     }
-    
+
     const data = Object.fromEntries(
-      this.goldPrices.map((gold, index) => [
+      Object.entries(this.goldMap).map(([name, price], index) => [
         index + 1,
         {
-          "Loại": gold.typeName,
-          "Giá bán": formatVND(this.parseNumber(gold.sell)),
-          "Giá mua": formatVND(this.parseNumber(gold.buy))
+          "Loại": name,
+          "Giá bán": formatVND(this.parseNumber(price.sell)),
+          "Giá mua": formatVND(this.parseNumber(price.buy))
         }
       ])
-    )
+    );
 
     console.table(data);
   }
 
-  private async checkETFCurrentPrice(fundCode: string, spin?: SpinnerResult): Promise<void> {
+  private async checkETFCurrentPrice(
+    fundCode: string,
+    spin?: SpinnerResult,
+  ): Promise<void> {
     const value = await stock.priceBoard({ ticker: fundCode });
     const price = value[0].listingInfo.refPrice;
 
     if (spin) {
-      spin.stop(color.yellowBright("Bảng giá ETFs hôm nay của sếp đây ạ"));
+      spin.stop(
+        color.yellowBright("Bảng giá các thông tin sếp quan tâm đây ạ"),
+      );
     }
 
-    console.log(`- Bảng giá ${fundCode} hôm nay là:\t${formatVND(price)}`);
+    if (price <= 29_000) {
+      console.log(
+        `- ${fundCode}:\t\t\t${color.bold(color.red(formatVND(price)))}`,
+      );
+    } else {
+      console.log(
+        `- ${fundCode}:\t\t\t${color.bold(color.green(formatVND(price)))}`,
+      );
+    }
   }
 
   private parseNumber(str: string): number {

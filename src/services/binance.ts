@@ -26,10 +26,10 @@ export default class Binance {
     const { lastPrice, priceChangePercent } = ticker.info;
 
     if (spin) {
-      spin.stop(color.yellowBright("Bảng giá crypto hôm nay của sếp đây ạ"));
+      spin.stop(color.yellowBright("Bảng giá các thông tin sếp quan tâm đây ạ"));
     }
     console.log(
-      `- ${type}:\t\t\t${formatUSD(lastPrice)}\t(${priceChangePercent}%)`,
+      `- ${type}:\t\t\t${color.bold(formatUSD(lastPrice))}\t(${priceChangePercent}%)`,
     );
   }
 }
